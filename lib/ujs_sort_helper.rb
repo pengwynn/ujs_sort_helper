@@ -51,7 +51,7 @@
 # - Introduces instance variables: @sort_name, @sort_default.
 # - Introduces params :sort_key and :sort_order.
 #
-module UnobtrusiveSortHelper
+module UjsSortHelper
 
   # Initializes the default sort column (default_key) and sort order
   # (default_order).

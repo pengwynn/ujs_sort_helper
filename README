@@ -45,12 +45,12 @@ of the ujs_sort_helper:
   <%= javascript_include_tag "lowpro"%> 
 you SHOULD already have this ;-)
 
-  <%= javascript_include_tag "ujs_sort_helper"%> 
+  <%= javascript_include_tag "ujs_sort_helper", :plugin => "ujs_sort_helper"%> 
 
 If you're using jQuery, simply include the jQuery version (assuming you already
 have jQuery and livequery installed)
 
-<%= javascript_include_tag "ujs_sort_helper.jquery.js"%> 
+<%= javascript_include_tag "ujs_sort_helper.jquery.js", :plugin => "ujs_sort_helper"%> 
 
 
 ====View (table header in index.rhtml):
