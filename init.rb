@@ -1,7 +1,7 @@
-require 'unobtrusive_sort_helper'
+require 'ujs_sort_helper'
 
-ActionView::Base.send(:include, UnobtrusiveSortHelper)
-ActionController::Base.send(:include, UnobtrusiveSortHelper)
+ActionView::Base.send(:include, UjsSortHelper)
+ActionController::Base.send(:include, UjsSortHelper)
 
 # install files
 ['/public/javascripts', '/public/stylesheets', '/public/images'].each{|dir|

@@ -39,11 +39,20 @@ styles for nifty sort arrow images
   <%= javascript_include_tag :defaults%> 
 as long as prototype.js is included before lowpro and ujs_sort_helper
 
+If you're not using jQuery, reference Dan Webb's lowpro and the Prototype version
+of the ujs_sort_helper:
+
   <%= javascript_include_tag "lowpro"%> 
 you SHOULD already have this ;-)
 
-  <%= javascript_include_tag "usj_sort_helper"%> 
-this is where ujs comes in    
+  <%= javascript_include_tag "ujs_sort_helper"%> 
+
+If you're using jQuery, simply include the jQuery version (assuming you already
+have jQuery and livequery installed)
+
+<%= javascript_include_tag "ujs_sort_helper.jquery.js"%> 
+
+
 ====View (table header in index.rhtml):
  
    <thead>
