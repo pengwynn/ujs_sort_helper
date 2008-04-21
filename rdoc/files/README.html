@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>File: README</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href=".././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+  <div id="fileHeader">
+    <h1>README</h1>
+    <table class="header-table">
+    <tr class="top-aligned-row">
+      <td><strong>Path:</strong></td>
+      <td>README
+      </td>
+    </tr>
+    <tr class="top-aligned-row">
+      <td><strong>Last Update:</strong></td>
+      <td>Wed Feb 27 13:55:00 -0600 2008</td>
+    </tr>
+    </table>
+  </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+    <div id="description">
+      <h1><a href="../classes/UnobtrusiveSortHelper.html">UnobtrusiveSortHelper</a></h1>
+<p>
+This is a plugin version of Stuart Rackham&#8216;s most excellent
+SortHelper helper. The link_to_remote ajax calls have been removed in favor
+of unobtrusive javascript using lowpro.js.
+</p>
+<h3>Features</h3>
+<ul>
+<li>Consecutive clicks toggle the column&#8216;s sort order.
+
+</li>
+<li>Sort state is maintained by a session hash entry.
+
+</li>
+<li>Icon image identifies sort column and state.
+
+</li>
+<li>Typically used in conjunction with the Pagination module.
+
+</li>
+</ul>
+<h3>Usage</h3>
+<h4>Controller:</h4>
+<pre>
+   def list
+     sort_init 'last_name'
+     sort_update
+     @items = Contact.find_all nil, sort_clause
+   end
+</pre>
+<h4>Controller (using will_paginate)</h4>
+<pre>
+   def list
+     sort_init 'last_name'
+     sort_update
+
+     options = {:page =&gt; params[:page], :include =&gt; :addresses, :order =&gt; sort_clause
+
+     @contacts = Contact.paginate(options)
+   end
+</pre>
+<h4>Layout (app/views/layouts/application.html.erb):</h4>
+<pre>
+  &lt;%= stylesheet_include_tag &quot;ujs_sort_helper&quot;%&gt;
+</pre>
+<p>
+styles for nifty sort arrow images
+</p>
+<pre>
+  &lt;%= javascript_include_tag :defaults%&gt;
+</pre>
+<p>
+as long as prototype.js is included before lowpro and ujs_sort_helper
+</p>
+<pre>
+  &lt;%= javascript_include_tag &quot;lowpro&quot;%&gt;
+</pre>
+<p>
+you SHOULD already have this ;-)
+</p>
+<pre>
+  &lt;%= javascript_include_tag &quot;usj_sort_helper&quot;%&gt;
+</pre>
+<p>
+this is where ujs comes in
+</p>
+<h4>View (table header in index.rhtml):</h4>
+<pre>
+   &lt;thead&gt;
+     &lt;tr&gt;
+       &lt;%= sort_header_tag('id', :title =&gt; 'Sort by contact ID') %&gt;
+       &lt;%= sort_header_tag('last_name', :caption =&gt; 'Name') %&gt;
+       &lt;%= sort_header_tag('phone') %&gt;
+       &lt;%= sort_header_tag('address', :width =&gt; 200) %&gt;
+     &lt;/tr&gt;
+   &lt;/thead&gt;
+</pre>
+<ul>
+<li>The ascending and descending sort icon images are sort_asc.png and
+sort_desc.png and reside in the application&#8216;s images directory.
+
+</li>
+<li>Introduces instance variables: @sort_name, @sort_default.
+
+</li>
+<li>Introduces params :sort_key and :sort_order.
+
+</li>
+</ul>
+<p>
+Copyright (c) 2005 Stuart Rackham, (c) 2008 Wynn Netherland released under
+the MIT license
+</p>
+
+    </div>
+
+
+   </div>
+
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+
+      
+
+
+    <!-- if method_list -->
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

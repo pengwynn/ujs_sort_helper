@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Module: UnobtrusiveSortHelper</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href=".././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+    <div id="classHeader">
+        <table class="header-table">
+        <tr class="top-aligned-row">
+          <td><strong>Module</strong></td>
+          <td class="class-name-in-header">UnobtrusiveSortHelper</td>
+        </tr>
+        <tr class="top-aligned-row">
+            <td><strong>In:</strong></td>
+            <td>
+                <a href="../files/lib/unobtrusive_sort_helper_rb.html">
+                lib/unobtrusive_sort_helper.rb
+                </a>
+        <br />
+            </td>
+        </tr>
+
+        </table>
+    </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+    <div id="description">
+      <p>
+Helpers to sort tables using clickable column headers.
+</p>
+<p>
+Author: Stuart Rackham &lt;srackham@methods.co.nz&gt;, March 2005. Modified
+by: Wynn Netherland &lt;wynn@squeejee.com&gt;, February 2008 to use UJS
+License: This source code is released under the MIT license.
+</p>
+<ul>
+<li>Consecutive clicks toggle the column&#8216;s sort order.
+
+</li>
+<li>Sort state is maintained by a session hash entry.
+
+</li>
+<li>Icon image identifies sort column and state.
+
+</li>
+<li>Typically used in conjunction with the Pagination module.
+
+</li>
+</ul>
+<p>
+Example code snippets:
+</p>
+<p>
+Controller:
+</p>
+<pre>
+  helper :sort
+  include SortHelper
+
+  def list
+    sort_init 'last_name'
+    sort_update
+    @items = Contact.find_all nil, sort_clause
+  end
+</pre>
+<p>
+Controller (using Pagination module):
+</p>
+<pre>
+  helper :sort
+  include SortHelper
+
+  def list
+    sort_init 'last_name'
+    sort_update
+    @contact_pages, @items = paginate :contacts,
+      :order_by =&gt; sort_clause,
+      :per_page =&gt; 10
+  end
+</pre>
+<p>
+View (table header in list.rhtml):
+</p>
+<pre>
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;%= sort_header_tag('id', :title =&gt; 'Sort by contact ID') %&gt;
+      &lt;%= sort_header_tag('last_name', :caption =&gt; 'Name') %&gt;
+      &lt;%= sort_header_tag('phone') %&gt;
+      &lt;%= sort_header_tag('address', :width =&gt; 200) %&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+</pre>
+<ul>
+<li>The ascending and descending sort icon images are sort_asc.png and
+sort_desc.png and reside in the application&#8216;s images directory.
+
+</li>
+<li>Introduces instance variables: @sort_name, @sort_default.
+
+</li>
+<li>Introduces params :sort_key and :sort_order.
+
+</li>
+</ul>
+
+    </div>
+
+
+   </div>
+
+    <div id="method-list">
+      <h3 class="section-bar">Methods</h3>
+
+      <div class="name-list">
+      <a href="#M000003">sort_clause</a>&nbsp;&nbsp;
+      <a href="#M000005">sort_header_tag</a>&nbsp;&nbsp;
+      <a href="#M000001">sort_init</a>&nbsp;&nbsp;
+      <a href="#M000004">sort_link</a>&nbsp;&nbsp;
+      <a href="#M000002">sort_update</a>&nbsp;&nbsp;
+      </div>
+    </div>
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+
+      
+
+
+    <!-- if method_list -->
+    <div id="methods">
+      <h3 class="section-bar">Public Instance methods</h3>
+
+      <div id="method-M000003" class="method-detail">
+        <a name="M000003"></a>
+
+        <div class="method-heading">
+          <a href="#M000003" class="method-signature">
+          <span class="method-name">sort_clause</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Returns an SQL sort clause corresponding to the current sort state. Use
+this to sort the controller&#8216;s table items collection.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000003-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000003-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/unobtrusive_sort_helper.rb, line 86</span>
+86:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">sort_clause</span>()
+87:     <span class="ruby-identifier">session</span>[<span class="ruby-ivar">@sort_name</span>][<span class="ruby-identifier">:key</span>] <span class="ruby-operator">+</span> <span class="ruby-value str">' '</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">session</span>[<span class="ruby-ivar">@sort_name</span>][<span class="ruby-identifier">:order</span>]
+88:   <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000005" class="method-detail">
+        <a name="M000005"></a>
+
+        <div class="method-heading">
+          <a href="#M000005" class="method-signature">
+          <span class="method-name">sort_header_tag</span><span class="method-args">(column, options = {})</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Returns a table header &lt;th&gt; tag with a sort link for the named column
+attribute.
+</p>
+<p>
+Options:
+</p>
+<pre>
+  :caption     The displayed link name (defaults to titleized column name).
+  :title       The tag's 'title' attribute (defaults to 'Sort by :caption').
+</pre>
+<p>
+Other options hash entries generate additional table header tag attributes.
+</p>
+<p>
+Example:
+</p>
+<pre>
+  &lt;%= sort_header_tag('id', :title =&gt; 'Sort by contact ID', :width =&gt; 40) %&gt;
+</pre>
+<p>
+Renders:
+</p>
+<pre>
+  &lt;th title=&quot;Sort by contact ID&quot; width=&quot;40&quot;&gt;
+    &lt;a href=&quot;/contact/list?sort_order=desc&amp;amp;sort_key=id&quot;&gt;Id&lt;/a&gt;
+    &amp;nbsp;&amp;nbsp;&lt;img alt=&quot;Sort_asc&quot; src=&quot;/images/sort_asc.png&quot; /&gt;
+  &lt;/th&gt;
+</pre>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000005-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000005-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/unobtrusive_sort_helper.rb, line 145</span>
+145:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">sort_header_tag</span>(<span class="ruby-identifier">column</span>, <span class="ruby-identifier">options</span> = {})    
+146:     <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:initial_order</span>].<span class="ruby-identifier">nil?</span> <span class="ruby-value">? </span><span class="ruby-identifier">initial_order</span> = <span class="ruby-value str">&quot;asc&quot;</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">initial_order</span> = <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:initial_order</span>]
+147:     <span class="ruby-identifier">caption</span> = <span class="ruby-identifier">options</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">:caption</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">titleize</span>(<span class="ruby-constant">Inflector</span><span class="ruby-operator">::</span><span class="ruby-identifier">humanize</span>(<span class="ruby-identifier">column</span>))
+148:     <span class="ruby-comment cmt">#options[:title] = caption unless options[:title]</span>
+149:     <span class="ruby-identifier">content_tag</span>(<span class="ruby-value str">'th'</span>, <span class="ruby-identifier">sort_link</span>(<span class="ruby-identifier">column</span>, <span class="ruby-identifier">caption</span>, <span class="ruby-identifier">initial_order</span>), <span class="ruby-identifier">options</span>.<span class="ruby-identifier">except</span>(<span class="ruby-identifier">:initial_order</span>))
+150:   <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000001" class="method-detail">
+        <a name="M000001"></a>
+
+        <div class="method-heading">
+          <a href="#M000001" class="method-signature">
+          <span class="method-name">sort_init</span><span class="method-args">(default_key, default_order='asc', name=nil)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Initializes the default sort column (default_key) and sort order
+(default_order).
+</p>
+<ul>
+<li>default_key is a column attribute name.
+
+</li>
+<li>default_order is &#8216;asc&#8217; or &#8216;desc&#8217;.
+
+</li>
+<li>name is the name of the session hash entry that stores the sort state,
+defaults to &#8217;&lt;controller_name&gt;_sort&#8217;.
+
+</li>
+</ul>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000001-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000001-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/unobtrusive_sort_helper.rb, line 64</span>
+64:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">sort_init</span>(<span class="ruby-identifier">default_key</span>, <span class="ruby-identifier">default_order</span>=<span class="ruby-value str">'asc'</span>, <span class="ruby-identifier">name</span>=<span class="ruby-keyword kw">nil</span>)
+65:     <span class="ruby-ivar">@sort_name</span> = <span class="ruby-identifier">name</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">params</span>[<span class="ruby-identifier">:controller</span>] <span class="ruby-operator">+</span> <span class="ruby-identifier">params</span>[<span class="ruby-identifier">:action</span>] <span class="ruby-operator">+</span> <span class="ruby-value str">'_sort'</span>
+66:     <span class="ruby-ivar">@sort_default</span> = {<span class="ruby-identifier">:key</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">default_key</span>, <span class="ruby-identifier">:order</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">default_order</span>}
+67:   <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000004" class="method-detail">
+        <a name="M000004"></a>
+
+        <div class="method-heading">
+          <a href="#M000004" class="method-signature">
+          <span class="method-name">sort_link</span><span class="method-args">(column, caption=nil, initial_order=&quot;asc&quot;)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Returns a link which sorts by the named column.
+</p>
+<ul>
+<li>column is the name of an attribute in the sorted record collection.
+
+</li>
+<li>The optional caption explicitly specifies the displayed link text.
+
+</li>
+<li>A sort icon image is positioned to the right of the sort link.
+
+</li>
+</ul>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000004-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000004-source">
+<pre>
+     <span class="ruby-comment cmt"># File lib/unobtrusive_sort_helper.rb, line 96</span>
+ 96:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">sort_link</span>(<span class="ruby-identifier">column</span>, <span class="ruby-identifier">caption</span>=<span class="ruby-keyword kw">nil</span>, <span class="ruby-identifier">initial_order</span>=<span class="ruby-value str">&quot;asc&quot;</span>)
+ 97:     
+ 98:     <span class="ruby-identifier">key</span>, <span class="ruby-identifier">order</span> = <span class="ruby-identifier">session</span>[<span class="ruby-ivar">@sort_name</span>][<span class="ruby-identifier">:key</span>], <span class="ruby-identifier">session</span>[<span class="ruby-ivar">@sort_name</span>][<span class="ruby-identifier">:order</span>]
+ 99:     <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">key</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">column</span>
+100:       <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">order</span>.<span class="ruby-identifier">downcase</span> <span class="ruby-operator">==</span> <span class="ruby-value str">'asc'</span>
+101:         <span class="ruby-identifier">icon</span> = <span class="ruby-value str">'sort_asc.png'</span>
+102:         <span class="ruby-identifier">order</span> = <span class="ruby-value str">'desc'</span>
+103:       <span class="ruby-keyword kw">else</span>
+104:         <span class="ruby-identifier">icon</span> = <span class="ruby-value str">'sort_desc.png'</span>
+105:         <span class="ruby-identifier">order</span> = <span class="ruby-value str">'asc'</span>
+106:       <span class="ruby-keyword kw">end</span>
+107:     <span class="ruby-keyword kw">else</span>
+108:       <span class="ruby-identifier">icon</span> = <span class="ruby-keyword kw">nil</span>
+109:       <span class="ruby-identifier">order</span> = <span class="ruby-identifier">initial_order</span> <span class="ruby-comment cmt"># JPM - Updated original helper to allow for a dynamic initial sort order</span>
+110:     <span class="ruby-keyword kw">end</span>
+111:     <span class="ruby-identifier">caption</span> = <span class="ruby-identifier">titleize</span>(<span class="ruby-constant">Inflector</span><span class="ruby-operator">::</span><span class="ruby-identifier">humanize</span>(<span class="ruby-identifier">column</span>)) <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">caption</span>
+112:     
+113:     <span class="ruby-identifier">url</span> = { <span class="ruby-identifier">:sort_key</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">column</span>, <span class="ruby-identifier">:sort_order</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">order</span>, <span class="ruby-identifier">:filter</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">params</span>[<span class="ruby-identifier">:filter</span>]}
+114:     <span class="ruby-identifier">url</span>.<span class="ruby-identifier">merge!</span>({<span class="ruby-identifier">:q</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">params</span>[<span class="ruby-identifier">:q</span>]}) <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">params</span>[<span class="ruby-identifier">:q</span>].<span class="ruby-identifier">nil?</span>
+115:     
+116:     <span class="ruby-comment cmt"># link_to_remote(caption,</span>
+117:     <span class="ruby-comment cmt">#               {:update =&gt; &quot;content&quot;, :url =&gt; url, :method =&gt; :get},</span>
+118:     <span class="ruby-comment cmt">#               {:href =&gt; url_for(url), :class =&gt; &quot;sort_link&quot;}) +</span>
+119:     <span class="ruby-comment cmt"># (icon ? nbsp(2) + image_tag(icon) : '')</span>
+120:     
+121:     <span class="ruby-comment cmt"># new ujs version:</span>
+122:     <span class="ruby-identifier">link_to</span>(<span class="ruby-identifier">caption</span>, <span class="ruby-identifier">url</span>, <span class="ruby-identifier">:class</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-node">&quot;sort_link #{order if key == column}&quot;</span>)
+123:   <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-M000002" class="method-detail">
+        <a name="M000002"></a>
+
+        <div class="method-heading">
+          <a href="#M000002" class="method-signature">
+          <span class="method-name">sort_update</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Updates the sort state. Call this in the controller prior to calling <a
+href="UnobtrusiveSortHelper.html#M000003">sort_clause</a>.
+</p>
+          <p><a class="source-toggle" href="#"
+            onclick="toggleCode('M000002-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000002-source">
+<pre>
+    <span class="ruby-comment cmt"># File lib/unobtrusive_sort_helper.rb, line 72</span>
+72:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">sort_update</span>()
+73:     <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">params</span>[<span class="ruby-identifier">:sort_key</span>]
+74:       <span class="ruby-identifier">sort</span> = {<span class="ruby-identifier">:key</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">params</span>[<span class="ruby-identifier">:sort_key</span>], <span class="ruby-identifier">:order</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">params</span>[<span class="ruby-identifier">:sort_order</span>]}
+75:     <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">session</span>[<span class="ruby-ivar">@sort_name</span>]
+76:       <span class="ruby-identifier">sort</span> = <span class="ruby-identifier">session</span>[<span class="ruby-ivar">@sort_name</span>]   <span class="ruby-comment cmt"># Previous sort.</span>
+77:     <span class="ruby-keyword kw">else</span>
+78:       <span class="ruby-identifier">sort</span> = <span class="ruby-ivar">@sort_default</span>
+79:     <span class="ruby-keyword kw">end</span>
+80:     <span class="ruby-identifier">session</span>[<span class="ruby-ivar">@sort_name</span>] = <span class="ruby-identifier">sort</span>
+81:   <span class="ruby-keyword kw">end</span>
+</pre>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

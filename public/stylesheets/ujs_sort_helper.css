@@ -1,0 +1,9 @@
+th a.asc {
+	background: url(/images/sort_desc.png) center right no-repeat;
+	padding-right: 10px;
+}
+
+th a.desc {
+	background: url(/images/sort_asc.png) center right no-repeat;
+	padding-right: 10px;
+}

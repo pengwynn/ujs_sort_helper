@@ -1,0 +1,64 @@
+=UnobtrusiveSortHelper
+
+
+This is a plugin version of Stuart Rackham's most excellent SortHelper helper. The link_to_remote ajax calls have been removed in favor of unobtrusive javascript using lowpro.js.
+
+=== Features
+
+- Consecutive clicks toggle the column's sort order.
+- Sort state is maintained by a session hash entry.
+- Icon image identifies sort column and state.
+- Typically used in conjunction with will_paginate plugin
+
+=== Usage
+
+====Controller:
+
+   def list
+     sort_init 'last_name'
+     sort_update
+     @items = Contact.find_all nil, sort_clause
+   end
+   
+====Controller (using will_paginate)
+
+   def list
+     sort_init 'last_name'
+     sort_update
+
+     options = {:page => params[:page], :include => :addresses, :order => sort_clause
+
+     @contacts = Contact.paginate(options)
+   end
+   
+====Layout (app/views/layouts/application.html.erb):
+
+  <%= stylesheet_link_tag "ujs_sort_helper"%> 
+styles for nifty sort arrow images
+
+  <%= javascript_include_tag :defaults%> 
+as long as prototype.js is included before lowpro and ujs_sort_helper
+
+  <%= javascript_include_tag "lowpro"%> 
+you SHOULD already have this ;-)
+
+  <%= javascript_include_tag "usj_sort_helper"%> 
+this is where ujs comes in    
+====View (table header in index.rhtml):
+ 
+   <thead>
+     <tr>
+       <%= sort_header_tag('id', :title => 'Sort by contact ID') %>
+       <%= sort_header_tag('last_name', :caption => 'Name') %>
+       <%= sort_header_tag('phone') %>
+       <%= sort_header_tag('address', :width => 200) %>
+     </tr>
+   </thead>
+
+- The ascending and descending sort icon images are sort_asc.png and sort_desc.png and reside in the application's images directory.
+- Introduces instance variables: @sort_name, @sort_default.
+- Introduces params :sort_key and :sort_order.
+
+
+
+Copyright (c) 2005 Stuart Rackham, (c) 2008 Wynn Netherland released under the MIT license
