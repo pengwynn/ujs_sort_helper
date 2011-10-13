@@ -26,7 +26,7 @@ This is a plugin version of Stuart Rackham's most excellent SortHelper helper. T
      sort_init 'last_name'
      sort_update
 
-     options = {:page => params[:page], :include => :addresses, :order => sort_clause
+     options = {:page => params[:page], :include => :addresses, :order => sort_clause }
 
      @contacts = Contact.paginate(options)
    end
